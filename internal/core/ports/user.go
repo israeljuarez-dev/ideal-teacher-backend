@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/adapters/dto/user"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/core/domain"
 
 )
@@ -18,11 +19,11 @@ type UserRepository interface {
 }
 
 type UserService interface {
-	GetByID(ctx context.Context, ID int32) (*domain.User, error)
-	GetByEmail(ctx context.Context, email string) (*domain.User, error)
-	GetAll(ctx context.Context, limit, offset int32) (domain.Users, error)
-	Create(ctx context.Context, user *domain.User) (*domain.User, error)
-	Update(ctx context.Context, user *domain.User) (*domain.User, error)
+	GetByID(ctx context.Context, ID int32) (*user.UserResponse, error)
+	GetByEmail(ctx context.Context, email string) (*user.UserResponse, error)
+	GetAll(ctx context.Context, limit, offset int32) (*user.UsersListResponse, error)
+	Create(ctx context.Context, user *user.CreateUserRequest) (*user.UserResponse, error)
+	Update(ctx context.Context, user *user.UpdateUserRequest) (*user.UserResponse, error)
 	Delete(ctx context.Context, ID int32) error
 }
 

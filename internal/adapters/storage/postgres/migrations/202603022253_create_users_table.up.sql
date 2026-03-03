@@ -3,7 +3,7 @@ CREATE TYPE user_status AS ENUM ('active', 'inactive');
 
 CREATE TABLE users (
     id SERIAL,
-    email VARCHAR(150) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     password TEXT NOT NULL,
     full_name VARCHAR(200) NOT NULL,
     role user_role NOT NULL,           
