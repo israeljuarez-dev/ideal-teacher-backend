@@ -8,6 +8,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
+
 )
 
 /*
@@ -16,6 +17,7 @@ import (
 * Así la aplicación puede ejecutar migraciones sin depender de
 * archivos externos en el sistema.
  */
+//go:embed migrations/*.sql
 var migrationsFS embed.FS
 
 // Migrate ejecuta las migraciones de la base de datos

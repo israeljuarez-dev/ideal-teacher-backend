@@ -1,0 +1,14 @@
+version: "2"
+
+sql:
+  - engine: "postgresql"
+    # Ruta a tus archivos de migración (donde están los CREATE TABLE)
+    schema: "internal/adapters/storage/postgres/migrations"
+    # Ruta a tus archivos de queries (donde está users.sql)
+    queries: "internal/adapters/storage/postgres/queries"
+    gen:
+      go:
+        package: "db"
+        # Ruta donde se generará el código Go
+        out: "internal/adapters/storage/postgres/db"
+        sql_package: "pgx/v5"

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+
 )
 
 /*
@@ -20,7 +20,6 @@ import (
  */
 type DB struct {
 	Pool         *pgxpool.Pool
-	QueryBuilder *squirrel.StatementBuilderType
 	url          string
 }
 
@@ -40,12 +39,8 @@ func New(ctx context.Context, cfg *config.DB) (*DB, error) {
 		return nil, err
 	}
 
-	// Configura el generador de consultas SQL con el formato de marcador de posición adecuado para PostgreSQL
-	psql := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
-
 	return &DB{
 		db,
-		&psql,
 		url,
 	}, nil
 }
