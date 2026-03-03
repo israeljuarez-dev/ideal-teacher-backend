@@ -13,7 +13,7 @@ type UserRepository interface {
 	GetByEmail(ctx context.Context, email string) (*domain.User, error)
 	GetAll(ctx context.Context, limit, offset int32) (domain.Users, error)
 	Create(ctx context.Context, user *domain.User) (*domain.User, error)
-	Update(ctx context.Context, user *domain.User) error
+	Update(ctx context.Context, user *domain.User) (*domain.User, error)
 	Delete(ctx context.Context, ID int32) error
 }
 
@@ -22,7 +22,7 @@ type UserService interface {
 	GetByEmail(ctx context.Context, email string) (*domain.User, error)
 	GetAll(ctx context.Context, limit, offset int32) (domain.Users, error)
 	Create(ctx context.Context, user *domain.User) (*domain.User, error)
-	Update(ctx context.Context, user *domain.User) error
+	Update(ctx context.Context, user *domain.User) (*domain.User, error)
 	Delete(ctx context.Context, ID int32) error
 }
 
