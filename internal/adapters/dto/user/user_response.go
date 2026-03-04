@@ -10,5 +10,5 @@ type UserResponse struct {
 
 type UsersListResponse struct {
 	Data  []UserResponse `json:"data"`
-	Total int64          `json:"total"`
+	Total int          `json:"total"`
 }

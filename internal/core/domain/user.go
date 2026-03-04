@@ -1,8 +1,12 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+)
 
 type Role string
+
 type Status string
 
 const (
@@ -19,8 +23,8 @@ type User struct {
 	Email     string
 	Password  string
 	FullName  string
-	Role      Role   
-	Status    Status 
+	Role      Role
+	Status    Status
 	CreatedAt time.Time
 }
 

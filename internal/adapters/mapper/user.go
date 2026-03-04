@@ -32,7 +32,7 @@ func UserToResponse(u *domain.User) *user.UserResponse {
 }
 
 // UsersToListResponse convierte un slice de usuarios en UsersListResponse
-func UsersToListResponse(users domain.Users, total int64) *user.UsersListResponse {
+func UsersToListResponse(users domain.Users) *user.UsersListResponse {
 	data := make([]user.UserResponse, 0, len(users))
 
 	for _, u := range users {
@@ -47,6 +47,6 @@ func UsersToListResponse(users domain.Users, total int64) *user.UsersListRespons
 
 	return &user.UsersListResponse{
 		Data:  data,
-		Total: total,
+		Total: len(data),
 	}
 }
