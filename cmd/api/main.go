@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"log/slog"
-	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/adapters/routers"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/adapters/storage/postgres"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
 
@@ -30,7 +31,6 @@ func main() {
 
 	slog.Info("Successfully connected to the database", "db", cfg.DB.Name)
 
-	
 	// Migrar tablas
 	if err := db.Migrate(cfg.DB); err != nil {
 		slog.Error("Error migrating database", "error", err)
@@ -38,10 +38,13 @@ func main() {
 	}
 	slog.Info("Successfully migrated the database")
 
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
+
+	// Configurar tus rutas
+	routers.InitRouters(router, db)
 
 	// Iniciar servidor pasando el 'mux' directamente
-	if err := config.StartServer(mux, cfg.HTTP.Port); err != nil {
+	if err := config.StartServer(router, cfg.HTTP.Port); err != nil {
 		slog.Error("Error starting server", "error", err)
 		os.Exit(1)
 	}
