@@ -63,8 +63,7 @@ func (s *userService) Create(ctx context.Context, ur *user.CreateUserRequest) (*
 		Email:    ur.Email,
 		Password: hashedPassword, 
 		FullName: ur.FullName,
-		Role:     domain.RoleStudent, 
-		Status:   domain.StatusActive,
+		Role:     domain.RoleStudent,
 	}
 
 	savedUser, err := s.repository.Create(ctx, u)

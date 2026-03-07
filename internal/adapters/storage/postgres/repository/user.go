@@ -79,6 +79,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 		Email:    user.Email,
 		Password: user.Password,
 		FullName: user.FullName,
+		Role: pg.UserRole(user.Role),
 	})
 	if err != nil {
 		return nil, err
