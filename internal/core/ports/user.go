@@ -25,6 +25,8 @@ type UserService interface {
 	Create(ctx context.Context, ur *user.CreateUserRequest) (*user.UserResponse, error)
 	Update(ctx context.Context, ID int32, ur *user.UpdateUserRequest) (*user.UserResponse, error)
 	Delete(ctx context.Context, ID int32) error
+	AddUserRole(ctx context.Context, userID, roleId int32) error
+	RemoveUserRole(ctx context.Context, userID, roleId int32) error
 }
 
 type UserHandler interface {
