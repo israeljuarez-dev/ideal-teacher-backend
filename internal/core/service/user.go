@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/adapters/dto/user"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/adapters/mapper"
@@ -53,7 +54,18 @@ func (s *userService) GetAll(ctx context.Context, limit, offset int32) (*user.Us
 	return usersResponse, nil
 }
 
-func (s *userService) Create(ctx context.Context, ur *user.CreateUserRequest) (*user.UserResponse, error) {
+func (s *userService) Register(ctx context.Context, ur *user.CreateUserRequest) (*user.UserResponse, error) {
+	var roleID int32
+
+    switch domain.Role(ur.Role) {
+		case domain.RoleStudent:
+			roleID = 2
+        case domain.RoleTeacher:
+            roleID = 3
+        default:
+            return nil, errors.New("invalid role: only student or teacher are allowed")
+    }
+	
 	hashedPassword, err := HashPassword(ur.Password)
     if err != nil {
         return nil, err 
@@ -70,6 +82,12 @@ func (s *userService) Create(ctx context.Context, ur *user.CreateUserRequest) (*
 	if err != nil {
 		return nil, err
 	}
+
+    if err := s.repository.AddUserRole(ctx, savedUser.ID, roleID); err != nil {
+        return nil, err
+    }
+	
+	savedUser.Role = domain.Role(ur.Role)
 
 	userResponse := mapper.UserToResponse(savedUser)
 
@@ -100,5 +118,13 @@ func (s *userService) Delete(ctx context.Context, ID int32) error {
 		return err
 	}
 
+	return nil
+}
+
+func (s *userService) AddUserRole(ctx context.Context, userID, roleId int32) error {
+	return nil
+}
+
+func (s *userService) RemoveUserRole(ctx context.Context, userID, roleId int32) error {
 	return nil
 }

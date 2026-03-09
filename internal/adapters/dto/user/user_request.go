@@ -1,9 +1,10 @@
 package user
 
 type CreateUserRequest struct {
-	Email    string `json:"email" validate:"required,email,max=150"`
+	Email    string `json:"email" validate:"required,email,max=255"`
 	Password string `json:"password" validate:"required,min=8,max=72"`
 	FullName string `json:"full_name" validate:"required,min=3,max=200"`
+	Role     string `json:"role" validate:"required"`
 }
 
 type UpdateUserRequest struct {

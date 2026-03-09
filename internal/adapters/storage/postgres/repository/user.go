@@ -11,15 +11,15 @@ import (
 )
 
 type userRepository struct {
-	db *postgres.DB
+	db    *postgres.DB
 	query *pg.Queries
-} 
+}
 
 func NewUserRepository(db *postgres.DB) ports.UserRepository {
-    return &userRepository{
-        db: db,
-        query:  pg.New(db.Pool),
-    }
+	return &userRepository{
+		db:    db,
+		query: pg.New(db.Pool),
+	}
 }
 
 func (r *userRepository) GetByID(ctx context.Context, id int32) (*domain.User, error) {
@@ -33,7 +33,6 @@ func (r *userRepository) GetByID(ctx context.Context, id int32) (*domain.User, e
 		Email:    u.Email,
 		Password: u.Password,
 		FullName: u.FullName,
-		Role:     domain.Role(u.Role),
 	}, nil
 }
 
@@ -48,7 +47,6 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.
 		Email:    u.Email,
 		Password: u.Password,
 		FullName: u.FullName,
-		Role:     domain.Role(u.Role),
 	}, nil
 }
 
@@ -67,7 +65,6 @@ func (r *userRepository) GetAll(ctx context.Context, limit, offset int32) (domai
 			ID:       row.ID,
 			Email:    row.Email,
 			FullName: row.FullName,
-			Role:     domain.Role(row.Role),
 		})
 	}
 
@@ -79,7 +76,6 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 		Email:    user.Email,
 		Password: user.Password,
 		FullName: user.FullName,
-		Role: pg.UserRole(user.Role),
 	})
 	if err != nil {
 		return nil, err
@@ -104,9 +100,33 @@ func (r *userRepository) Update(ctx context.Context, user *domain.User) (*domain
 }
 
 func (r *userRepository) Delete(ctx context.Context, id int32) error {
-	if err := r.query.DeleteUser(ctx, id); err != nil{
+	if err := r.query.DeleteUser(ctx, id); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (r *userRepository) AddUserRole(ctx context.Context, userID, roleID int32) error {
+	err := r.query.AddUserRole(ctx, pg.AddUserRoleParams{
+		UserID: userID,
+		RoleID: roleID,
+	}); 
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *userRepository) RemoveUserRole(ctx context.Context, userID, roleID int32) error {
+	err := r.query.RemoveUserRole(ctx, pg.RemoveUserRoleParams{
+		UserID: userID,
+		RoleID: roleID,
+	})
+	if err != nil {
+		return err
+	}
+	
 	return nil
 }

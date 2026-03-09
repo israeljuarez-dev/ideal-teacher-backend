@@ -16,13 +16,15 @@ type UserRepository interface {
 	Create(ctx context.Context, u *domain.User) (*domain.User, error)
 	Update(ctx context.Context, u *domain.User) (*domain.User, error)
 	Delete(ctx context.Context, ID int32) error
+	AddUserRole(ctx context.Context, userID, roleId int32) error
+	RemoveUserRole(ctx context.Context, userID, roleId int32) error
 }
 
 type UserService interface {
 	GetByID(ctx context.Context, ID int32) (*user.UserResponse, error)
 	GetByEmail(ctx context.Context, email string) (*user.UserResponse, error)
 	GetAll(ctx context.Context, limit, offset int32) (*user.UsersListResponse, error)
-	Create(ctx context.Context, ur *user.CreateUserRequest) (*user.UserResponse, error)
+	Register(ctx context.Context, ur *user.CreateUserRequest) (*user.UserResponse, error)
 	Update(ctx context.Context, ID int32, ur *user.UpdateUserRequest) (*user.UserResponse, error)
 	Delete(ctx context.Context, ID int32) error
 	AddUserRole(ctx context.Context, userID, roleId int32) error

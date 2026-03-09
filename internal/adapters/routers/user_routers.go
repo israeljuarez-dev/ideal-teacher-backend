@@ -26,7 +26,7 @@ func setUpUser(router *mux.Router, db *postgres.DB) {
 	api.HandleFunc(userIDPath, userHandler.GetByID).Methods("GET")
 	api.HandleFunc(userBasicPath, userHandler.GetByEmail).Methods("GET")
 
-	api.HandleFunc(userBasicPath, userHandler.Create).Methods("POST")
+	api.HandleFunc(userBasicPath, userHandler.Register).Methods("POST")
 
 	api.HandleFunc(usersPath, userHandler.GetAll).Methods("GET")
 

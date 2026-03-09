@@ -4,7 +4,6 @@ SELECT
     email,
     password,
     full_name,
-    role,
     status
 FROM users
 WHERE id = $1
@@ -17,7 +16,6 @@ SELECT
     email,
     password,
     full_name,
-    role,
     status
 FROM users
 WHERE email = $1
@@ -30,7 +28,6 @@ SELECT
     email,
     password,
     full_name,
-    role,
     status
 FROM users
 ORDER BY full_name ASC
@@ -42,16 +39,14 @@ INSERT INTO users (
     email,
     password,
     full_name,
-    role,
     status
 )
-VALUES ($1, $2, $3, $4, COALESCE($5, 'active'))
+VALUES ($1, $2, $3, COALESCE($4, 'active'))
 RETURNING
     id,
     email,
     password,
     full_name,
-    role,
     status;
 
 
@@ -60,11 +55,21 @@ UPDATE users
 SET
     email = $2,
     full_name = $3,
-    role = $4,
-    status = $5
+    status = $4
 WHERE id = $1;
 
 
 -- name: DeleteUser :exec
 DELETE FROM users
 WHERE id = $1;
+
+
+-- name: AddUserRole :exec
+INSERT INTO user_roles (user_id, role_id) 
+values ($1, $2);
+
+
+-- name: RemoveUserRole :exec
+DELETE FROM user_roles 
+WHERE user_id = $1 
+AND role_id = $2;

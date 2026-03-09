@@ -9,21 +9,34 @@ import (
 	"context"
 )
 
+const addUserRole = `-- name: AddUserRole :exec
+INSERT INTO user_roles (user_id, role_id) 
+values ($1, $2)
+`
+
+type AddUserRoleParams struct {
+	UserID int32
+	RoleID int32
+}
+
+func (q *Queries) AddUserRole(ctx context.Context, arg AddUserRoleParams) error {
+	_, err := q.db.Exec(ctx, addUserRole, arg.UserID, arg.RoleID)
+	return err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
     email,
     password,
     full_name,
-    role,
     status
 )
-VALUES ($1, $2, $3, $4, COALESCE($5, 'active'))
+VALUES ($1, $2, $3, COALESCE($4, 'active'))
 RETURNING
     id,
     email,
     password,
     full_name,
-    role,
     status
 `
 
@@ -31,8 +44,7 @@ type CreateUserParams struct {
 	Email    string
 	Password string
 	FullName string
-	Role     UserRole
-	Column5  interface{}
+	Column4  interface{}
 }
 
 type CreateUserRow struct {
@@ -40,8 +52,7 @@ type CreateUserRow struct {
 	Email    string
 	Password string
 	FullName string
-	Role     UserRole
-	Status   NullUserStatus
+	Status   UserStatus
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
@@ -49,8 +60,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 		arg.Email,
 		arg.Password,
 		arg.FullName,
-		arg.Role,
-		arg.Column5,
+		arg.Column4,
 	)
 	var i CreateUserRow
 	err := row.Scan(
@@ -58,7 +68,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 		&i.Email,
 		&i.Password,
 		&i.FullName,
-		&i.Role,
 		&i.Status,
 	)
 	return i, err
@@ -80,7 +89,6 @@ SELECT
     email,
     password,
     full_name,
-    role,
     status
 FROM users
 ORDER BY full_name ASC
@@ -97,8 +105,7 @@ type GetAllRow struct {
 	Email    string
 	Password string
 	FullName string
-	Role     UserRole
-	Status   NullUserStatus
+	Status   UserStatus
 }
 
 func (q *Queries) GetAll(ctx context.Context, arg GetAllParams) ([]GetAllRow, error) {
@@ -115,7 +122,6 @@ func (q *Queries) GetAll(ctx context.Context, arg GetAllParams) ([]GetAllRow, er
 			&i.Email,
 			&i.Password,
 			&i.FullName,
-			&i.Role,
 			&i.Status,
 		); err != nil {
 			return nil, err
@@ -134,7 +140,6 @@ SELECT
     email,
     password,
     full_name,
-    role,
     status
 FROM users
 WHERE email = $1
@@ -146,8 +151,7 @@ type GetUserByEmailRow struct {
 	Email    string
 	Password string
 	FullName string
-	Role     UserRole
-	Status   NullUserStatus
+	Status   UserStatus
 }
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
@@ -158,7 +162,6 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEm
 		&i.Email,
 		&i.Password,
 		&i.FullName,
-		&i.Role,
 		&i.Status,
 	)
 	return i, err
@@ -170,7 +173,6 @@ SELECT
     email,
     password,
     full_name,
-    role,
     status
 FROM users
 WHERE id = $1
@@ -182,8 +184,7 @@ type GetUserByIDRow struct {
 	Email    string
 	Password string
 	FullName string
-	Role     UserRole
-	Status   NullUserStatus
+	Status   UserStatus
 }
 
 func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, error) {
@@ -194,10 +195,25 @@ func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, er
 		&i.Email,
 		&i.Password,
 		&i.FullName,
-		&i.Role,
 		&i.Status,
 	)
 	return i, err
+}
+
+const removeUserRole = `-- name: RemoveUserRole :exec
+DELETE FROM user_roles 
+WHERE user_id = $1 
+AND role_id = $2
+`
+
+type RemoveUserRoleParams struct {
+	UserID int32
+	RoleID int32
+}
+
+func (q *Queries) RemoveUserRole(ctx context.Context, arg RemoveUserRoleParams) error {
+	_, err := q.db.Exec(ctx, removeUserRole, arg.UserID, arg.RoleID)
+	return err
 }
 
 const updateUser = `-- name: UpdateUser :exec
@@ -205,8 +221,7 @@ UPDATE users
 SET
     email = $2,
     full_name = $3,
-    role = $4,
-    status = $5
+    status = $4
 WHERE id = $1
 `
 
@@ -214,8 +229,7 @@ type UpdateUserParams struct {
 	ID       int32
 	Email    string
 	FullName string
-	Role     UserRole
-	Status   NullUserStatus
+	Status   UserStatus
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
@@ -223,7 +237,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.ID,
 		arg.Email,
 		arg.FullName,
-		arg.Role,
 		arg.Status,
 	)
 	return err
