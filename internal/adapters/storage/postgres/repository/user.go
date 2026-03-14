@@ -31,8 +31,9 @@ func (r *userRepository) GetByID(ctx context.Context, id int32) (*domain.User, e
 	return &domain.User{
 		ID:       u.ID,
 		Email:    u.Email,
-		Password: u.Password,
 		FullName: u.FullName,
+		Role:     domain.Role(u.RoleName.String),
+		Status:   domain.Status(u.Status),
 	}, nil
 }
 
@@ -45,8 +46,9 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.
 	return &domain.User{
 		ID:       u.ID,
 		Email:    u.Email,
-		Password: u.Password,
 		FullName: u.FullName,
+		Role:     domain.Role(u.RoleName.String),
+		Status:   domain.Status(u.Status),
 	}, nil
 }
 
@@ -65,32 +67,41 @@ func (r *userRepository) GetAll(ctx context.Context, limit, offset int32) (domai
 			ID:       row.ID,
 			Email:    row.Email,
 			FullName: row.FullName,
+			Role:     domain.Role(row.RoleName.String),
+			Status:   domain.Status(row.Status),
 		})
 	}
 
 	return users, nil
 }
 
-func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
-	u, err := r.query.CreateUser(ctx, pg.CreateUserParams{
-		Email:    user.Email,
-		Password: user.Password,
-		FullName: user.FullName,
+func (r *userRepository) Create(ctx context.Context, u *domain.User) (*domain.User, error) {
+	dbUser, err := r.query.CreateUser(ctx, pg.CreateUserParams{
+		Email:    u.Email,
+		Password: u.Password,
+		FullName: u.FullName,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	user.ID = u.ID
+	user := &domain.User{
+        ID:        dbUser.ID,
+        Email:     dbUser.Email,
+        FullName:  dbUser.FullName,
+        Role:     domain.Role(dbUser.Status),
+			Status:   domain.Status(row.Status),
+	}
 
 	return user, nil
 }
 
-func (r *userRepository) Update(ctx context.Context, user *domain.User) (*domain.User, error) {
-	err := r.query.UpdateUser(ctx, pg.UpdateUserParams{
-		ID:       user.ID,
-		Email:    user.Email,
-		FullName: user.FullName,
+func (r *userRepository) Update(ctx context.Context, u *domain.User) (*domain.User, error) {
+	user, err := r.query.UpdateUser(ctx, pg.UpdateUserParams{
+		ID:       u.ID,
+		Email:    u.Email,
+		FullName: u.FullName,
+		Status: pg.UserStatus(u.Status),
 	})
 	if err != nil {
 		return nil, err
@@ -111,7 +122,7 @@ func (r *userRepository) AddUserRole(ctx context.Context, userID, roleID int32) 
 	err := r.query.AddUserRole(ctx, pg.AddUserRoleParams{
 		UserID: userID,
 		RoleID: roleID,
-	}); 
+	})
 	if err != nil {
 		return err
 	}
@@ -127,6 +138,6 @@ func (r *userRepository) RemoveUserRole(ctx context.Context, userID, roleID int3
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }

@@ -1,7 +1,0 @@
-CREATE TABLE departments (
-    id SERIAL,
-    name VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT pk_departments PRIMARY KEY (id)
-);

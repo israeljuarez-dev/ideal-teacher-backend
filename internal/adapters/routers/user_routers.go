@@ -23,14 +23,14 @@ func setUpUser(router *mux.Router, db *postgres.DB) {
 
 	api := router.PathPrefix(apiV1).Subrouter()
 
-	api.HandleFunc(userIDPath, userHandler.GetByID).Methods("GET")
-	api.HandleFunc(userBasicPath, userHandler.GetByEmail).Methods("GET")
+	api.HandleFunc(userIDPath, userHandler.GetByIDHandler).Methods("GET")
+	api.HandleFunc(userBasicPath, userHandler.GetByEmailHandler).Methods("GET")
 
-	api.HandleFunc(userBasicPath, userHandler.Register).Methods("POST")
+	api.HandleFunc(userBasicPath, userHandler.RegisterHandler).Methods("POST")
 
-	api.HandleFunc(usersPath, userHandler.GetAll).Methods("GET")
+	api.HandleFunc(usersPath, userHandler.GetAllHandler).Methods("GET")
 
-	api.HandleFunc(userIDPath, userHandler.Update).Methods("PUT")
+	api.HandleFunc(userIDPath, userHandler.UpdateHandler).Methods("PUT")
 	
-	api.HandleFunc(userIDPath, userHandler.Delete).Methods("DELETE")
+	api.HandleFunc(userIDPath, userHandler.DeleteHandler).Methods("DELETE")
 }

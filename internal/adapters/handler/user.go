@@ -19,7 +19,7 @@ func NewUserHandler(service ports.UserService) *UserHandler {
 	return &UserHandler{service: service}
 }
 
-func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -37,7 +37,7 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *UserHandler) GetByEmail(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) GetByEmailHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.URL.Query().Get("email")
 
 	if email == "" {
@@ -54,7 +54,7 @@ func (h *UserHandler) GetByEmail(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var request user.CreateUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -72,7 +72,7 @@ func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 
 	limit := int32(10)
@@ -101,7 +101,7 @@ func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
-func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, _ := strconv.Atoi(idStr)
 
@@ -121,7 +121,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
-func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, _ := strconv.Atoi(idStr)
 
