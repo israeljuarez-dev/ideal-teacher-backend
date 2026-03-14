@@ -1,12 +1,6 @@
 package repository
 
 import (
-	"context"
-
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/adapters/storage/postgres"
-	pg "github.com/israeljuarez-dev/ideal-teacher-backend/internal/adapters/storage/postgres/db"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/core/domain"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/core/ports"
 
 )
 
