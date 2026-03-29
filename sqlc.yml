@@ -1,0 +1,14 @@
+version: "2"
+sql:
+  # Módulo de USUARIOS
+  - engine: "postgresql"
+    schema: "internal/db/postgres/migrations" # Migraciones globales
+    # Ruta a tus archivos de queries (donde está users.sql)
+    queries: "internal/db/postgres/queries"
+    gen:
+      go:
+        package: "repository"
+        # Ruta donde se generará el código Go
+        out: "internal/user/storage/postgres/sqlc"
+        sql_package: "pgx/v5"
+        emit_result_struct_pointer: true

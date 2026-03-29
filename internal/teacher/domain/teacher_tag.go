@@ -13,3 +13,5 @@ type Tag struct {
 	Name      string
 	Sentiment TagSentiment
 }
+
+type Tags []Tag
