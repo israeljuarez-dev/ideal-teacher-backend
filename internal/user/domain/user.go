@@ -12,6 +12,7 @@ type UserStatus string
 const (
 	UserStatusActive   UserStatus = "active"
 	UserStatusInactive UserStatus = "inactive"
+	UserStatysBlocked  UserStatus = "blocked"
 )
 
 type User struct {
@@ -22,5 +23,7 @@ type User struct {
 	LastName  string
 	Status    UserStatus
 	CreatedAt time.Time
-	Roles     domain.Role 
+	Roles     domain.Role
 }
+
+type Users []User
