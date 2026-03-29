@@ -10,7 +10,7 @@ import (
 )
 
 type DB struct {
-	pool *pgxpool.Pool
+	Pool *pgxpool.Pool
 	url  string
 }
 
@@ -56,5 +56,5 @@ func (db *DB) ErrorCode(err error) string {
 
 // Close cierra la conexión a la base de datos
 func (db *DB) Close() {
-	db.pool.Close()
+	db.Pool.Close()
 }

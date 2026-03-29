@@ -17,5 +17,7 @@ func InitRouters(db *postgres.DB) *chi.Mux {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	setUpUser(r, db)
+
 	return r
 }
