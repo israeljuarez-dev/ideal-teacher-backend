@@ -3,14 +3,16 @@ package router
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/db/postgres"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/validator"
 )
 
 const (
 	apiV1 = "/api/v1"
 )
 
-func InitRouters(db *postgres.DB) *chi.Mux {
+func InitRouters(db *postgres.DB, v *validator.Validator, cfg *config.JWT) *chi.Mux {
 	r := chi.NewRouter()
 
 	// Middlewares útiles
@@ -18,6 +20,7 @@ func InitRouters(db *postgres.DB) *chi.Mux {
 	r.Use(middleware.Recoverer)
 
 	setUpUser(r, db)
+	setUpAuth(r, db, v, cfg)
 
 	return r
 }

@@ -8,6 +8,7 @@ type (
 	Container struct {
 		App App
 		DB  DB
+		JWT JWT
 		Log Log
 	}
 
@@ -32,6 +33,11 @@ type (
 		SSLMode  string
 		MinConn  int
 		MaxConn  int
+	}
+
+	JWT struct {
+		ExpirationTime int64
+		SecretKey      string
 	}
 
 	Log struct {

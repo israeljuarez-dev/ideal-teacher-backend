@@ -8,6 +8,7 @@ import (
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/db/postgres"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/router"
+	myValidator "github.com/israeljuarez-dev/ideal-teacher-backend/internal/validator"
 )
 
 func main() {
@@ -36,8 +37,11 @@ func main() {
 	}
 	slog.Info("Successfully migrated the database")
 
+	// Crear validator
+	validate := myValidator.New()
+
 	// Configurar tus rutas
-	router := router.InitRouters(db)
+	router := router.InitRouters(db, validate, &cfg.Container.JWT)
 
 	// Iniciar servidor
 	if err := config.StartServer(router, cfg.Container.App.Port); err != nil {
