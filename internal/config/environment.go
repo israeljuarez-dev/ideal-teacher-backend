@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"strconv"
 
@@ -39,6 +40,10 @@ func New() (env, error) {
 					MinConn:  getEnvAsInt("DB_MIN_CONN", 3),
 					MaxConn:  getEnvAsInt("DB_MAX_CONN", 100),
 				},
+			},
+			JWT: JWT{
+				ExpirationTime: getEnvExpTimeJWTAsInt("EXP_JWT", 10, 64),
+				SecretKey:      os.Getenv("API_SECRET"),
 			},
 			Log: Log{
 				LogLevel:          os.Getenv("LOG_LEVEL"),
@@ -82,4 +87,25 @@ func getEnvAsBool(key string, defaultVal bool) bool {
 	}
 
 	return parsed
+}
+
+func getEnvExpTimeJWTAsInt(env string, base, bitSize int) int64 {
+	var defaultVal int64 = 86400
+
+	valStr := os.Getenv(env)
+	if valStr == "" {
+		return defaultVal
+	}
+
+	exp, err := strconv.ParseInt(valStr, base, bitSize)
+	if err != nil {
+		slog.Error("Error converting JWT_EXP, using default value",
+			slog.String("error", err.Error()),
+			slog.Int64("default", defaultVal),
+		)
+
+		return defaultVal
+	}
+
+	return exp
 }

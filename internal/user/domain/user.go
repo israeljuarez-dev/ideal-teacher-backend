@@ -23,7 +23,7 @@ type User struct {
 	LastName  string
 	Status    UserStatus
 	CreatedAt time.Time
-	Roles     domain.Role
+	Role      domain.Role
 }
 
 type Users []User
