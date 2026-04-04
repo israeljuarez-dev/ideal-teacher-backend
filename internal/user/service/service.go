@@ -3,21 +3,20 @@ package service
 import (
 	"context"
 
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/dto"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/storage/postgres/repository"
+	repository "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/postgres"
 )
 
 type (
 	UserService interface {
-		Register(ctx context.Context, u *dto.CreateUserRequest) (*dto.UserResponse, error)
-		GetByEmail(ctx context.Context, email string) (*dto.UserResponse, error)
+		Register(ctx context.Context, in *InsertUserIn) (*InsertUserOut, error)
+		GetByEmail(ctx context.Context, email string) (*GetByEmailUserOut, error)
 	}
 
-	Service struct {
+	service struct {
 		repo repository.UserRepository
 	}
 )
 
-func NewUserService(repo repository.UserRepository) UserService {
-	return &Service{repo: repo}
+func New(repo repository.UserRepository) UserService {
+	return &service{repo: repo}
 }

@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/dto"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/pipes"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/service"
 )
 
 func (h *handler) Register(w http.ResponseWriter, r *http.Request) {
-	var req dto.CreateUserRequest
+	var req pipes.CreateUserIn
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -18,7 +19,14 @@ func (h *handler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	userResp, err := h.serv.Register(r.Context(), &req)
+	u := &service.InsertUserIn{
+		Email:     req.Email,
+		Password:  req.Password,
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+	}
+
+	userResp, err := h.serv.Register(r.Context(), u)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

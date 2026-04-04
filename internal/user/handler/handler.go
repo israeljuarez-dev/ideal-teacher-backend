@@ -16,6 +16,6 @@ type (
 	}
 )
 
-func NewUserHandler(serv service.UserService) userHandler {
+func New(serv service.UserService) userHandler {
 	return &handler{serv: serv}
 }

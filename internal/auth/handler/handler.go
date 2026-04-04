@@ -12,14 +12,14 @@ type (
 		Login(w http.ResponseWriter, r *http.Request)
 	}
 
-	Handler struct {
+	handler struct {
 		serv service.AuthService
 		v    *validator.Validator
 	}
 )
 
-func NewAuthHandler(serv service.AuthService, v *validator.Validator) AuthHandler {
-	return &Handler{
+func New(serv service.AuthService, v *validator.Validator) AuthHandler {
+	return &handler{
 		serv: serv,
 		v:    v,
 	}

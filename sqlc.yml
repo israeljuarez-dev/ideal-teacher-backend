@@ -9,6 +9,6 @@ sql:
       go:
         package: "repository"
         # Ruta donde se generará el código Go
-        out: "internal/user/storage/postgres/sqlc"
+        out: "internal/user/repository/sqlc"
         sql_package: "pgx/v5"
-        emit_result_struct_pointer: true
+        emit_result_struct_pointers: true

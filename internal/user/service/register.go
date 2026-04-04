@@ -6,15 +6,13 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/dto"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/storage/postgres/models"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/mapper"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/models"
 	"github.com/jackc/pgx/v5/pgtype"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *Service) Register(ctx context.Context, u *dto.CreateUserRequest) (*dto.UserResponse, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+func (s *service) Register(ctx context.Context, in *InsertUserIn) (*InsertUserOut, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("error hashing password: %w", err)
 	}
@@ -25,12 +23,12 @@ func (s *Service) Register(ctx context.Context, u *dto.CreateUserRequest) (*dto.
 		Valid: true,
 	}
 
-	userParams := &models.InsertUserParams{
+	userParams := &models.InsertUserParamsIn{
 		ID:        pgUUID,
-		Email:     u.Email,
+		Email:     in.Email,
 		Password:  string(hashedPassword),
-		FirstName: u.FirstName,
-		LastName:  u.LastName,
+		FirstName: in.FirstName,
+		LastName:  in.LastName,
 	}
 
 	udb, err := s.repo.Insert(ctx, userParams)
@@ -38,7 +36,14 @@ func (s *Service) Register(ctx context.Context, u *dto.CreateUserRequest) (*dto.
 		return nil, fmt.Errorf("error creating user: %w", err)
 	}
 
-	userResponse := mapper.ToUserResponse(udb)
+	u := &InsertUserOut{
+		ID:        udb.ID,
+		Email:     udb.Email,
+		FirstName: udb.FirstName,
+		LastName:  udb.LastName,
+		Status:    udb.Status,
+		CreatedAt: udb.CreatedAt,
+	}
 
-	return userResponse, nil
+	return u, nil
 }

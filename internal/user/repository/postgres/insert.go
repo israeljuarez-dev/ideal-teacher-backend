@@ -6,17 +6,18 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/domain"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/storage/postgres/models"
-	sqlc "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/storage/postgres/sqlc"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/models"
+	sqlc "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/sqlc"
 )
 
-func (r *Repository) Insert(ctx context.Context, u *models.InsertUserParams) (*domain.User, error) {
+func (r *repository) Insert(ctx context.Context, in *models.InsertUserParamsIn) (*models.InsertUserOut, error) {
 	userParams := sqlc.CreateUserParams{
-		ID:        u.ID,
-		Email:     u.Email,
-		Password:  u.Password,
-		FirstName: u.FirstName,
-		LastName:  u.LastName,
+		ID:        in .ID,
+		Email:     in .Email,
+		Password:  in .Password,
+		FirstName: in .FirstName,
+		LastName:  in .LastName,
+
 	}
 
 	ur, err := r.query.CreateUser(ctx, userParams)
@@ -30,11 +31,12 @@ func (r *Repository) Insert(ctx context.Context, u *models.InsertUserParams) (*d
 	}
 
 	var createdAt time.Time
+
 	if ur.CreatedAt.Valid {
 		createdAt = ur.CreatedAt.Time
 	}
 
-	user := &domain.User{
+	u := &models.InsertUserOut{
 		ID:        parsedID,
 		Email:     ur.Email,
 		FirstName: ur.FirstName,
@@ -43,5 +45,5 @@ func (r *Repository) Insert(ctx context.Context, u *models.InsertUserParams) (*d
 		CreatedAt: createdAt,
 	}
 
-	return user, nil
+	return u, nil
 }

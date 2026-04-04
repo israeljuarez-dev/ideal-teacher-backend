@@ -4,26 +4,25 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/dto"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/jwt"
 )
 
-func (s *Service) Login(ctx context.Context, r *dto.LoginRequest) (*dto.LoginResponse, error) {
-	user, err := s.repo.GetByEmail(ctx, r.Email)
+func (s *service) Login(ctx context.Context, in *LoginIn) (*LoginOut, error) {
+	u, err := s.repo.GetByEmail(ctx, in.Email)
 	if err != nil {
 		return nil, fmt.Errorf("invalid user or password")
 	}
 
-	if err := comparePassword(r.Password, user.Password); err != nil {
+	if err := comparePassword(in.Password, u.Password); err != nil {
 		return nil, fmt.Errorf("invalid user or password")
 	}
 
-	accessToken, err := jwt.GenerateToken(user, s.cfg)
+	accessToken, err := jwt.GenerateToken(u, s.cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error generating token")
 	}
 
-	response := &dto.LoginResponse{
+	response := &LoginOut{
 		Token:     accessToken,
 		ExpiresIn: int(s.cfg.ExpirationTime),
 	}

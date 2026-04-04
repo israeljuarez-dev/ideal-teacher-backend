@@ -1,11 +1,11 @@
-package dto
+package pipes
 
 import (
 	"github.com/google/uuid"
 )
 
 type (
-	UserResponse struct {
+	UserResponseOut struct {
 		ID       uuid.UUID `json:"id"`
 		Email    string    `json:"email"`
 		FullName string    `json:"full_name"`
@@ -13,8 +13,8 @@ type (
 		Status   string    `json:"status"`
 	}
 
-	UsersListResponse struct {
-		Data  []UserResponse `json:"data"`
-		Total int            `json:"total"`
+	UsersListResponseOut struct {
+		Data  []UserResponseOut `json:"data"`
+		Total int               `json:"total"`
 	}
 )

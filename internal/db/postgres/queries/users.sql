@@ -11,7 +11,17 @@ INSERT INTO users (
 RETURNING id, email, first_name, last_name, status, created_at;
 
 -- name: GetUserByEmail :one
-SELECT id, email, password, first_name, last_name, status, created_at
-FROM users
-WHERE email = $1
+SELECT 
+    u.id, 
+    u.email, 
+    u.password, 
+    u.first_name, 
+    u.last_name, 
+    u.status, 
+    u.created_at,
+    r.name AS role_name
+FROM users u
+INNER JOIN user_roles ur ON u.id = ur.user_id
+INNER JOIN roles r ON ur.role_id = r.id
+WHERE u.email = $1
 LIMIT 1;

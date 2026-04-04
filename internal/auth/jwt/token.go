@@ -10,9 +10,10 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/domain"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/models"
 )
 
-func GenerateToken(u *domain.User, cfg *config.JWT) (string, error) {
+func GenerateToken(u *models.GetUserByEmailOut, cfg *config.JWT) (string, error) {
 	expAt := time.Now().Add(time.Second * time.Duration(cfg.ExpirationTime)).Unix() // tiempo de expiración del token
 
 	secretKey := cfg.SecretKey // clave secreta para firmar el token
@@ -22,7 +23,7 @@ func GenerateToken(u *domain.User, cfg *config.JWT) (string, error) {
 	claims := Claims{
 		UserID: u.ID,
 		Email:  u.Email,
-		Role:   u.Role.Name,
+		Role:   u.RoleName,
 		Status: string(u.Status),
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  iat,
