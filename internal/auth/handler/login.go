@@ -9,7 +9,7 @@ import (
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/validator"
 )
 
-func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var req pipes.LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)

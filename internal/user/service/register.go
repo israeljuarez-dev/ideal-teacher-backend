@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *service) Register(ctx context.Context, in *InsertUserIn) (*InsertUserOut, error) {
+func (s *Service) Register(ctx context.Context, in *InsertUserIn) (*InsertUserOut, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("error hashing password: %w", err)

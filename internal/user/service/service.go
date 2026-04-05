@@ -12,11 +12,11 @@ type (
 		GetByEmail(ctx context.Context, email string) (*GetByEmailUserOut, error)
 	}
 
-	service struct {
+	Service struct {
 		repo repository.UserRepository
 	}
 )
 
-func New(repo repository.UserRepository) UserService {
-	return &service{repo: repo}
+func New(repo repository.UserRepository) *Service {
+	return &Service{repo: repo}
 }

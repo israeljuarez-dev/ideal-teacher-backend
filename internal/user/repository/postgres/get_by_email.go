@@ -9,7 +9,7 @@ import (
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/models"
 )
 
-func (r *repository) GetByEmail(ctx context.Context, email string) (*models.GetUserByEmailOut, error) {
+func (r *Repository) GetByEmail(ctx context.Context, email string) (*models.GetUserByEmailOut, error) {
 	ur, err := r.query.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err

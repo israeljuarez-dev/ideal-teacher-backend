@@ -15,12 +15,12 @@ type (
 		GetByEmail(ctx context.Context, email string) (*models.GetUserByEmailOut, error)
 	}
 
-	repository struct {
+	Repository struct {
 		db    *postgres.DB
 		query *sqlc.Queries
 	}
 )
 
-func New(db *postgres.DB) UserRepository {
-	return &repository{db: db, query: sqlc.New(db.Pool)}
+func New(db *postgres.DB) *Repository {
+	return &Repository{db: db, query: sqlc.New(db.Pool)}
 }

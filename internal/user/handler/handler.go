@@ -7,15 +7,15 @@ import (
 )
 
 type (
-	userHandler interface {
+	UserHandler interface {
 		Register(w http.ResponseWriter, r *http.Request)
 	}
 
-	handler struct {
+	Handler struct {
 		serv service.UserService
 	}
 )
 
-func New(serv service.UserService) userHandler {
-	return &handler{serv: serv}
+func New(serv service.UserService) *Handler {
+	return &Handler{serv: serv}
 }

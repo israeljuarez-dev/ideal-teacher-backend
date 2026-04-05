@@ -1,25 +1,34 @@
 package routes
 
 import (
-	"github.com/go-chi/chi/v5"
+	"net/http"
+
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/handler"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/service"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/db/postgres"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/routing"
 	repository "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/postgres"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/validator"
 )
 
 const (
-	authBasicPath = "/auth/login"
+	basePath      = "/auth"
+	authLoginPath = "/login"
 )
 
-func SetUpAuth(pathPrefix string, router chi.Router, db *postgres.DB, v *validator.Validator, cfg *config.JWT) {
-	authRepository := repository.New(db)
-	authServ := service.New(authRepository, cfg)
-	authHandler := handler.New(authServ, v)
+func InitAuthRoutes(db *postgres.DB, v *validator.Validator, cfg *config.JWT) routing.Group {
+	repo := repository.New(db)
+	serv := service.New(repo, cfg)
+	hand := handler.New(serv, v)
 
-	router.Route(pathPrefix, func(r chi.Router) {
-		r.Post(authBasicPath, authHandler.Login)
-	})
+	return routing.Group{
+		Routes: []routing.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    basePath + authLoginPath,
+				Handler: hand.Login,
+			},
+		},
+	}
 }

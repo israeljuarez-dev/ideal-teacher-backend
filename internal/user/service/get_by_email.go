@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (s *service) GetByEmail(ctx context.Context, email string) (*GetByEmailUserOut, error) {
+func (s *Service) GetByEmail(ctx context.Context, email string) (*GetByEmailUserOut, error) {
 	udb, err := s.repo.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, fmt.Errorf("error getting user: %w", err)

@@ -10,7 +10,7 @@ import (
 	sqlc "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/sqlc"
 )
 
-func (r *repository) Insert(ctx context.Context, in *models.InsertUserParamsIn) (*models.InsertUserOut, error) {
+func (r *Repository) Insert(ctx context.Context, in *models.InsertUserParamsIn) (*models.InsertUserOut, error) {
 	userParams := sqlc.CreateUserParams{
 		ID:        in .ID,
 		Email:     in .Email,

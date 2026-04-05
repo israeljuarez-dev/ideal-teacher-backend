@@ -8,16 +8,17 @@ import (
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/service"
 )
 
-func (h *handler) Register(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var req pipes.CreateUserIn
 
+	defer r.Body.Close()
+	
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "invalid request body"})
 		return
 	}
-	defer r.Body.Close()
 
 	u := &service.InsertUserIn{
 		Email:     req.Email,
