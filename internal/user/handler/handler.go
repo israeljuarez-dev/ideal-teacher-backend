@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/service"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/validator"
 )
 
 type (
@@ -13,9 +15,15 @@ type (
 
 	Handler struct {
 		serv service.UserService
+		log  *slog.Logger
+		v    *validator.Validator
 	}
 )
 
-func New(serv service.UserService) *Handler {
-	return &Handler{serv: serv}
+func New(serv service.UserService, log *slog.Logger, v *validator.Validator) *Handler {
+	return &Handler{
+		serv: serv,
+		log:  log,
+		v:    v,
+	}
 }

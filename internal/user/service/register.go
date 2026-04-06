@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/myerrors"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/models"
 	"github.com/jackc/pgx/v5/pgtype"
 	"golang.org/x/crypto/bcrypt"
@@ -14,6 +15,7 @@ import (
 func (s *Service) Register(ctx context.Context, in *InsertUserIn) (*InsertUserOut, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
 	if err != nil {
+		s.log.Error("service.Register: bcrypt failed", "error", err)
 		return nil, fmt.Errorf("error hashing password: %w", err)
 	}
 
@@ -33,7 +35,11 @@ func (s *Service) Register(ctx context.Context, in *InsertUserIn) (*InsertUserOu
 
 	udb, err := s.repo.Insert(ctx, userParams)
 	if err != nil {
-		return nil, fmt.Errorf("error creating user: %w", err)
+		s.log.Error("service.Register: repo insert failed", "error", err)
+		return nil, &myerrors.UserError{
+			Msg: "email already registered",
+			Err: myerrors.EmailAlreadyExistsError,
+		}
 	}
 
 	u := &InsertUserOut{

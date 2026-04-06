@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 )
@@ -15,7 +16,7 @@ func StartServer(handler http.Handler, port string) error {
 		IdleTimeout:  120 * time.Second,
 	}
 
-	fmt.Printf("Servidor  corriendo en http://localhost:%s\n", port)
+	slog.Info("Servidor  corriendo en http://localhost:%s\n", "port", port)
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		return fmt.Errorf("fallo al iniciar el servidor: %w", err)

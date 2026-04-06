@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/handler"
@@ -17,16 +18,17 @@ const (
 	authLoginPath = "/login"
 )
 
-func InitAuthRoutes(db *postgres.DB, v *validator.Validator, cfg *config.JWT) routing.Group {
+func InitAuthRoutes(db *postgres.DB, v *validator.Validator, log *slog.Logger, cfg *config.JWT) routing.Group {
 	repo := repository.New(db)
-	serv := service.New(repo, cfg)
-	hand := handler.New(serv, v)
+	serv := service.New(repo, log, cfg)
+	hand := handler.New(serv, log, v)
 
 	return routing.Group{
+		Prefix: basePath,
 		Routes: []routing.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    basePath + authLoginPath,
+				Path:    authLoginPath,
 				Handler: hand.Login,
 			},
 		},

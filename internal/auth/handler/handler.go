@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/service"
@@ -14,13 +15,15 @@ type (
 
 	Handler struct {
 		serv service.AuthService
+		log  *slog.Logger
 		v    *validator.Validator
 	}
 )
 
-func New(serv service.AuthService, v *validator.Validator) *Handler {
+func New(serv service.AuthService, log *slog.Logger, v *validator.Validator) *Handler {
 	return &Handler{
 		serv: serv,
+		log:  log,
 		v:    v,
 	}
 }

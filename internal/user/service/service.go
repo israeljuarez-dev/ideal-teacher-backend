@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log/slog"
 
 	repository "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/postgres"
 )
@@ -14,9 +15,13 @@ type (
 
 	Service struct {
 		repo repository.UserRepository
+		log  *slog.Logger
 	}
 )
 
-func New(repo repository.UserRepository) *Service {
-	return &Service{repo: repo}
+func New(repo repository.UserRepository, log  *slog.Logger) *Service {
+	return &Service{
+		repo: repo, 
+		log: log,
+	}
 }

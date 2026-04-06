@@ -1,6 +1,8 @@
 package router
 
 import (
+	"log/slog"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	authRoutes "github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/routes"
@@ -16,14 +18,14 @@ const (
 	pathPrefix = "/api/v1"
 )
 
-func InitRouters(db *postgres.DB, v *validator.Validator, cfg *config.JWT) *chi.Mux {
+func InitRouters(db *postgres.DB, v *validator.Validator, log *slog.Logger, cfg *config.JWT) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
 	groups := []routing.Group{
-		userRoutes.InitUserRoutes(db, cfg),
-		authRoutes.InitAuthRoutes(db, v, cfg),
+		userRoutes.InitUserRoutes(db, v, log, cfg),
+		authRoutes.InitAuthRoutes(db, v, log, cfg),
 	}
 
 	r.Route(pathPrefix, func(r chi.Router) {
