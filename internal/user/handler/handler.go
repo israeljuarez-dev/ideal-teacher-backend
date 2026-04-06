@@ -1,21 +1,29 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/service"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/validator"
 )
 
 type (
-	userHandler interface {
+	UserHandler interface {
 		Register(w http.ResponseWriter, r *http.Request)
 	}
 
-	handler struct {
+	Handler struct {
 		serv service.UserService
+		log  *slog.Logger
+		v    *validator.Validator
 	}
 )
 
-func NewUserHandler(serv service.UserService) userHandler {
-	return &handler{serv: serv}
+func New(serv service.UserService, log *slog.Logger, v *validator.Validator) *Handler {
+	return &Handler{
+		serv: serv,
+		log:  log,
+		v:    v,
+	}
 }

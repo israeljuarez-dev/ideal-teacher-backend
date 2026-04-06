@@ -2,7 +2,7 @@ package jwt
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -10,9 +10,10 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/domain"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/models"
 )
 
-func GenerateToken(u *domain.User, cfg *config.JWT) (string, error) {
+func GenerateToken(u *models.GetUserByEmailOut, cfg *config.JWT) (string, error) {
 	expAt := time.Now().Add(time.Second * time.Duration(cfg.ExpirationTime)).Unix() // tiempo de expiración del token
 
 	secretKey := cfg.SecretKey // clave secreta para firmar el token
@@ -22,7 +23,7 @@ func GenerateToken(u *domain.User, cfg *config.JWT) (string, error) {
 	claims := Claims{
 		UserID: u.ID,
 		Email:  u.Email,
-		Role:   u.Role.Name,
+		Role:   u.RoleName,
 		Status: string(u.Status),
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  iat,
@@ -40,10 +41,10 @@ func GenerateToken(u *domain.User, cfg *config.JWT) (string, error) {
 	return token, nil
 }
 
-func validateToken(r *http.Request, cfg *config.JWT) (domain.User, error) {
+func ValidateToken(r *http.Request, log *slog.Logger, cfg *config.JWT) (domain.User, error) {
 	token, err := getToken(r)
 	if err != nil {
-		log.Printf("Error retrieving token: %v", err)
+		log.Error("jwt: missing token", "error", err, "path", r.URL.Path)
 		return domain.User{}, fmt.Errorf("no token found in request: %w", err)
 	}
 
@@ -53,19 +54,19 @@ func validateToken(r *http.Request, cfg *config.JWT) (domain.User, error) {
 		return validateMethodAndGetSecret(t, cfg)
 	})
 	if err != nil {
-		log.Printf("Token not valid: %v\n", err)
+		log.Error("jwt: invalid token", "error", err)
 		return domain.User{}, err
 	}
 
 	userData, ok := jwtToken.Claims.(jwt.MapClaims)
 	if !ok || !jwtToken.Valid {
-		log.Println("Unable to retrieve payload information or token is invalid")
+		log.Error("jwt: invalid claims")
 		return domain.User{}, fmt.Errorf("invalid token claims")
 	}
 
 	_, ok = userData["email"].(string)
 	if !ok {
-		log.Println("Email field missing or not a string in token claims")
+		log.Error("jwt: email missing in claims")
 		return domain.User{}, fmt.Errorf("email field is missing or invalid in token claims")
 	}
 

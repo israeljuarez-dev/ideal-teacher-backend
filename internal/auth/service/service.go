@@ -2,26 +2,28 @@ package service
 
 import (
 	"context"
+	"log/slog"
 
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/dto"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/config"
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/storage/postgres/repository"
+	repository "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/postgres"
 )
 
 type (
 	AuthService interface {
-		Login(ctx context.Context, req *dto.LoginRequest) (*dto.LoginResponse, error)
+		Login(ctx context.Context, in *LoginIn) (*LoginOut, error)
 	}
 
-	Service struct {
+	service struct {
 		repo repository.UserRepository
+		log  *slog.Logger
 		cfg  *config.JWT
 	}
 )
 
-func NewAuthService(repo repository.UserRepository, cfg *config.JWT) AuthService {
-	return &Service{
+func New(repo repository.UserRepository, log *slog.Logger, cfg *config.JWT) AuthService {
+	return &service{
 		repo: repo,
+		log: log,
 		cfg:  cfg,
 	}
 }

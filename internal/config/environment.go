@@ -47,8 +47,8 @@ func New() (env, error) {
 			},
 			Log: Log{
 				LogLevel:          os.Getenv("LOG_LEVEL"),
-				AddSource:         getEnvAsBool("LOG_ADD_SOURCE", false),
-				ConsoleDecoration: getEnvAsBool("LOG_CONSOLE_DECORATION", true),
+				AddSource:         os.Getenv("LOG_ADD_SOURCE") == "true",
+				ConsoleDecoration: os.Getenv("LOG_CONSOLE_DECORATION") == "true",
 			},
 		},
 	}

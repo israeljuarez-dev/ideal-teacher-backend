@@ -4,26 +4,35 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/dto"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/jwt"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/myerrors"
 )
 
-func (s *Service) Login(ctx context.Context, r *dto.LoginRequest) (*dto.LoginResponse, error) {
-	user, err := s.repo.GetByEmail(ctx, r.Email)
+func (s *service) Login(ctx context.Context, in *LoginIn) (*LoginOut, error) {
+	u, err := s.repo.GetByEmail(ctx, in.Email)
 	if err != nil {
-		return nil, fmt.Errorf("invalid user or password")
+		s.log.Error("service.Login: user not found", "email", in.Email)
+		return nil, &myerrors.AuthError{
+			Msg: "invalid user or password",
+			Err: myerrors.InvalidEmailOrPassword,
+		}
 	}
 
-	if err := comparePassword(r.Password, user.Password); err != nil {
-		return nil, fmt.Errorf("invalid user or password")
+	if err := comparePassword(in.Password, u.Password); err != nil {
+		s.log.Error("service.Login: wrong password", "email", in.Email)
+		return nil, &myerrors.AuthError{
+			Msg: "invalid user or password",
+			Err: myerrors.InvalidEmailOrPassword, 
+		}
 	}
 
-	accessToken, err := jwt.GenerateToken(user, s.cfg)
+	accessToken, err := jwt.GenerateToken(u, s.cfg)
 	if err != nil {
-		return nil, fmt.Errorf("error generating token")
+		 s.log.Error("service.Login: token generation failed", "error", err)
+        return nil, fmt.Errorf("error generating token: %w", err)
 	}
 
-	response := &dto.LoginResponse{
+	response := &LoginOut{
 		Token:     accessToken,
 		ExpiresIn: int(s.cfg.ExpirationTime),
 	}

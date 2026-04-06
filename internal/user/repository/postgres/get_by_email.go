@@ -6,9 +6,10 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/domain"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/models"
 )
 
-func (r *Repository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+func (r *Repository) GetByEmail(ctx context.Context, email string) (*models.GetUserByEmailOut, error) {
 	ur, err := r.query.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -24,15 +25,16 @@ func (r *Repository) GetByEmail(ctx context.Context, email string) (*domain.User
 		createdAt = ur.CreatedAt.Time
 	}
 
-	user := &domain.User{
+	u := &models.GetUserByEmailOut{
 		ID:        parsedID,
 		Email:     ur.Email,
-		Password:  ur.Password, // necesario para comparar hash en login
 		FirstName: ur.FirstName,
 		LastName:  ur.LastName,
+		Password:  ur.Password,
 		Status:    domain.UserStatus(ur.Status),
 		CreatedAt: createdAt,
+		RoleName:  ur.RoleName,
 	}
 
-	return user, nil
+	return u, nil
 }
