@@ -22,14 +22,14 @@ func (s *service) Login(ctx context.Context, in *LoginIn) (*LoginOut, error) {
 		s.log.Error("service.Login: wrong password", "email", in.Email)
 		return nil, &myerrors.AuthError{
 			Msg: "invalid user or password",
-			Err: myerrors.InvalidEmailOrPassword, 
+			Err: myerrors.InvalidEmailOrPassword,
 		}
 	}
 
 	accessToken, err := jwt.GenerateToken(u, s.cfg)
 	if err != nil {
-		 s.log.Error("service.Login: token generation failed", "error", err)
-        return nil, fmt.Errorf("error generating token: %w", err)
+		s.log.Error("service.Login: token generation failed", "error", err)
+		return nil, fmt.Errorf("error generating token: %w", err)
 	}
 
 	response := &LoginOut{
