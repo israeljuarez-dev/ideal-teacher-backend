@@ -11,6 +11,7 @@ import (
 type (
 	UserHandler interface {
 		Register(w http.ResponseWriter, r *http.Request)
+		GetByEmail(w http.ResponseWriter, r *http.Request)
 	}
 
 	Handler struct {

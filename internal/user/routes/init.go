@@ -11,7 +11,7 @@ import (
 	repository "github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/repository/postgres"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/user/service"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/validator"
-	// "github.com/israeljuarez-dev/ideal-teacher-backend/pkg/middleware"
+	"github.com/israeljuarez-dev/ideal-teacher-backend/pkg/middleware"
 )
 
 const (
@@ -32,9 +32,14 @@ func InitUserRoutes(db *postgres.DB, v *validator.Validator, log *slog.Logger, c
 				Method:  http.MethodPost,
 				Path:    voidPath,
 				Handler: hand.Register,
-				/*Middlewares: []func(http.Handler) http.Handler{
-					middleware.ValidateJWT(cfg),
-				},*/
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    voidPath,
+				Handler: hand.GetByEmail,
+				Middlewares: []func(http.Handler) http.Handler{
+					middleware.ValidateJWT(cfg, log),
+				},
 			},
 		},
 	}
