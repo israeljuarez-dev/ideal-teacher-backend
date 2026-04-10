@@ -51,7 +51,7 @@ func fieldMessage(fe validator.FieldError) string {
 	case "required":
 		return "Este campo es requerido"
 	case "email":
-		return "Debe ser un correom electrónico válido"
+		return "Debe ser un correo electrónico válido"
 	case "min":
 		return "Debe tener al menos" + fe.Param() + " carácteres"
 	case "max":

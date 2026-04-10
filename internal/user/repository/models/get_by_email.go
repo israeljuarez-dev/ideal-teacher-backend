@@ -16,6 +16,6 @@ type (
 		Password  string
 		Status    user.UserStatus
 		CreatedAt time.Time
-		RoleName  string 
+		RoleName  string
 	}
 )

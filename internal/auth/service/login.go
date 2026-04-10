@@ -3,13 +3,16 @@ package service
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/jwt"
 	"github.com/israeljuarez-dev/ideal-teacher-backend/internal/auth/myerrors"
 )
 
 func (s *service) Login(ctx context.Context, in *LoginIn) (*LoginOut, error) {
-	u, err := s.repo.GetByEmail(ctx, in.Email)
+	email := strings.TrimSpace(strings.ToLower(in.Email))
+
+	u, err := s.repo.GetByEmail(ctx, email)
 	if err != nil {
 		s.log.Error("service.Login: user not found", "email", in.Email)
 		return nil, &myerrors.AuthError{
@@ -17,6 +20,9 @@ func (s *service) Login(ctx context.Context, in *LoginIn) (*LoginOut, error) {
 			Err: myerrors.InvalidEmailOrPassword,
 		}
 	}
+
+	fmt.Println("INPUT PASSWORD:", in.Password)
+	fmt.Println("HASHED PASSWORD:", u.Password)
 
 	if err := comparePassword(in.Password, u.Password); err != nil {
 		s.log.Error("service.Login: wrong password", "email", in.Email)

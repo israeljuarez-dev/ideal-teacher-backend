@@ -19,9 +19,9 @@ type (
 	}
 )
 
-func New(repo repository.UserRepository, log  *slog.Logger) *Service {
+func New(repo repository.UserRepository, log *slog.Logger) *Service {
 	return &Service{
-		repo: repo, 
-		log: log,
+		repo: repo,
+		log:  log,
 	}
 }

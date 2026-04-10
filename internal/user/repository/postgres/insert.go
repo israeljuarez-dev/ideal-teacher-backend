@@ -17,7 +17,6 @@ func (r *Repository) Insert(ctx context.Context, in *models.InsertUserParamsIn) 
 		Password:  in .Password,
 		FirstName: in .FirstName,
 		LastName:  in .LastName,
-
 	}
 
 	ur, err := r.query.CreateUser(ctx, userParams)
