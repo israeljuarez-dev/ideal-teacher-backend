@@ -21,7 +21,7 @@ SELECT
     u.created_at,
     r.name AS role_name
 FROM users u
-INNER JOIN user_roles ur ON u.id = ur.user_id
-INNER JOIN roles r ON ur.role_id = r.id
+LEFT JOIN user_roles ur ON u.id = ur.user_id
+LEFT JOIN roles r ON ur.role_id = r.id
 WHERE u.email = $1
 LIMIT 1;

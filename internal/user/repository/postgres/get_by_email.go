@@ -25,6 +25,11 @@ func (r *Repository) GetByEmail(ctx context.Context, email string) (*models.GetU
 		createdAt = ur.CreatedAt.Time
 	}
 
+	var roleName string
+	if ur.RoleName.Valid {
+		roleName = ur.RoleName.String
+	}
+
 	u := &models.GetUserByEmailOut{
 		ID:        parsedID,
 		Email:     ur.Email,
@@ -33,7 +38,7 @@ func (r *Repository) GetByEmail(ctx context.Context, email string) (*models.GetU
 		Password:  ur.Password,
 		Status:    domain.UserStatus(ur.Status),
 		CreatedAt: createdAt,
-		RoleName:  ur.RoleName,
+		RoleName:  roleName,
 	}
 
 	return u, nil
