@@ -23,11 +23,15 @@ func New() (env, error) {
 	Env = env{
 		Container: Container{
 			App: App{
-				Name:           os.Getenv("APP_NAME"),
-				Protocol:       os.Getenv("APP_PROTOCOL"),
-				Port:           os.Getenv("SERVER_PORT"),
-				AllowedOrigins: os.Getenv("ALLOWED_ORIGINS"),
-				AllowedMethods: os.Getenv("ALLOWED_METHODS"),
+				Name:     os.Getenv("APP_NAME"),
+				Protocol: os.Getenv("APP_PROTOCOL"),
+				Port:     os.Getenv("SERVER_PORT"),
+			},
+			Cors: CORS{
+				AllowedOrigins:   os.Getenv("ALLOWED_ORIGINS"),
+				AllowedMethods:   os.Getenv("ALLOWED_METHODS"),
+				AllowedHeaders:   os.Getenv("ALLOWED_HEADERS"),
+				AllowCredentials: os.Getenv("ALLOW_CREDENTIALS") == "true",
 			},
 			DB: DB{
 				PostgresEnv: PostgresEnv{
@@ -42,7 +46,7 @@ func New() (env, error) {
 				},
 			},
 			JWT: JWT{
-				ExpirationTime: getEnvExpTimeJWTAsInt("EXP_JWT", 10, 64),
+				ExpirationTime: getEnvExpTimeJWTAsInt("JWT_EXP", 10, 64),
 				SecretKey:      os.Getenv("API_SECRET"),
 			},
 			Log: Log{
