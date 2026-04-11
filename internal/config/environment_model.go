@@ -6,18 +6,25 @@ type (
 	}
 
 	Container struct {
-		App App
-		DB  DB
-		JWT JWT
-		Log Log
+		App  App
+		Cors CORS
+		DB   DB
+		JWT  JWT
+		Log  Log
 	}
 
 	App struct {
-		Name           string
-		Protocol       string
-		Port           string
-		AllowedOrigins string
-		AllowedMethods string
+		Name     string
+		Protocol string
+		Port     string
+	}
+
+	CORS struct {
+		AllowedOrigins   string
+		AllowedMethods   string
+		AllowedHeaders   string
+		AllowCredentials bool
+		ApiPrefix        string
 	}
 
 	DB struct {
